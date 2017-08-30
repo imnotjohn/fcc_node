@@ -15,10 +15,63 @@
 //
 
 var net = require('net');
-var port = process.argv;
+var portNum = process.argv[2];
 
-var server = net.createServer(function(socket) {
+var builtDate = "";
+var date = new Date();
+var fullYear = date.getFullYear();
+var month = date.getMonth() + 1;
+var dateOfMonth = date.getDate();
+var hours = date.getHours();
+var minutes = date.getMinutes();
+
+var server = net.createServer(function listener(socket) {
     // socket handling logic
+    socket.write(builtDate);
+    socket.end();    
 });
+server.listen(portNum);
 
-console.log(port);
+builtDate = buildDate();
+function buildDate() {
+    if (month < 10) {
+       month = makeZero(month); 
+    }
+    if (dateOfMonth < 10) {
+        dateOfMonth = makeZero(dateOfMonth);
+    }
+    if (hours < 10) {
+        hours = makeZero(hours);
+    }
+    if (minutes < 10) {
+        minutes = makeZero(minutes);
+    }
+    return fullYear + "-" + month + "-" + dateOfMonth + " " + hours + ":" + minutes + "\n";
+}
+function makeZero(n) {
+   return "0" + n; 
+}
+
+// Solution:
+/*
+var net = require('net')
+
+    function zeroFill (i) {
+      return (i < 10 ? '0' : '') + i
+    }
+
+    function now () {
+      var d = new Date()
+      return d.getFullYear() + '-' +
+        zeroFill(d.getMonth() + 1) + '-' +
+        zeroFill(d.getDate()) + ' ' +
+        zeroFill(d.getHours()) + ':' +
+        zeroFill(d.getMinutes())
+    }
+
+    var server = net.createServer(function (socket) {
+      socket.end(now() + '\n')
+    })
+
+    server.listen(Number(process.argv[2]))
+*/
